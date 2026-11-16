@@ -11,8 +11,7 @@
       "limiar": { "modo": "roxo", "margem": 30 } },
 
     { "codigo": "itsp", "nome": "Itajaí",
-      "recorte": { "x": 0.051, "y": 0.346, "largura": 0.430, "altura": 0.351 },
-      "limiar": { "modo": "claro", "r": 228, "g": 222, "b": 205 } },
+    "recorte": { "x": 0.085, "y": 0.40, "largura": 0.32, "altura": 0.21 } },
 
     { "codigo": "spes", "nome": "Shopping Estação",
       "recorte": { "x": 0.083, "y": 0.609, "largura": 0.260, "altura": 0.176 },
@@ -21,9 +20,7 @@
     { "codigo": "pbot", "nome": "Porto Belo Outlet",
       "recorte": { "x": 0.673, "y": 0.720, "largura": 0.204, "altura": 0.129 },
       "limiar": { "modo": "laranja", "r": 190, "g": 180, "b": 80 } },
-
+    
     { "codigo": "sppc", "nome": "Palladium Curitiba",
-      "recorte": { "x": 0.604, "y": 0.756, "largura": 0.219, "altura": 0.139 },
-      "limiar": { "modo": "claro", "r": 225, "g": 223, "b": 215 } }
-  ]
+    "recorte": { "x": 0.595, "y": 0.75, "largura": 0.26, "altura": 0.16 } }
 }
