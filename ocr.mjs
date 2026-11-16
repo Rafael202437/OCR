@@ -1,3 +1,4 @@
+import fs from 'fs';
 import { PNG } from 'pngjs';
 import { createWorker } from 'tesseract.js';
 import { fileURLToPath } from 'url';
@@ -46,10 +47,15 @@ async function reconhecer(worker, png, psm) {
 }
 
 export async function criarWorker() {
-  // fileURLToPath (não .pathname): no Windows o .pathname vira "/C:/..." e o tesseract monta "C:\C:\..."
-  const langPath = fileURLToPath(new URL('./lang', import.meta.url));
-  const cachePath = fileURLToPath(new URL('./.cache', import.meta.url));
-  const w = await createWorker('eng', 1, { langPath, gzip: true, cachePath });
+  // Usa o arquivo de idioma LOCAL (pasta lang) quando ele existe — caso do PC, onde a internet pode
+  // bloquear o download. Se não existir (ex.: rodando na nuvem do GitHub), deixa o Tesseract baixar
+  // sozinho do site dele. fileURLToPath (não .pathname): no Windows o .pathname vira "/C:/...".
+  const langFile = fileURLToPath(new URL('./lang/eng.traineddata.gz', import.meta.url));
+  let opts = {};
+  if (fs.existsSync(langFile)) {
+    opts = { langPath: fileURLToPath(new URL('./lang', import.meta.url)), gzip: true, cachePath: fileURLToPath(new URL('./.cache', import.meta.url)) };
+  }
+  const w = await createWorker('eng', 1, opts);
   await w.setParameters({ tessedit_char_whitelist: '0123456789', tessedit_pageseg_mode: '7' });
   return w;
 }
