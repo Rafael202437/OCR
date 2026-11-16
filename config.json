@@ -15,8 +15,8 @@
       "limiar": { "modo": "claro", "r": 225, "g": 225, "b": 225 } },
 
     { "codigo": "spes", "nome": "Shopping Estação",
-      "recorte": { "x": 0.083, "y": 0.609, "largura": 0.260, "altura": 0.176 },
-      "limiar": { "modo": "escuro", "r": 170, "g": 70, "b": 70 } },
+  "recorte": { "x": 0.085, "y": 0.60, "largura": 0.30, "altura": 0.20 },
+  "limiar": { "modo": "escuro", "r": 170, "g": 70, "b": 70 } }
 
     { "codigo": "pbot", "nome": "Porto Belo Outlet",
       "recorte": { "x": 0.673, "y": 0.720, "largura": 0.204, "altura": 0.129 },
