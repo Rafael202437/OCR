@@ -1,0 +1,26 @@
+name: Coletor de Brindes (OCR)
+
+on:
+  schedule:
+    - cron: '*/15 * * * *'
+  workflow_dispatch: {}
+
+jobs:
+  ler:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Baixar os arquivos
+        uses: actions/checkout@v4
+      - name: Preparar o Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Instalar dependências
+        run: npm install
+      - name: Instalar o navegador (Chromium)
+        run: npx playwright install --with-deps chromium
+      - name: Ler os monitores e enviar ao portal
+        run: node coletor.mjs --uma-vez
+        env:
+          BRINDES_OCR_TOKEN: ${{ secrets.BRINDES_OCR_TOKEN }}
