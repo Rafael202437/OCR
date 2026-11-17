@@ -3,6 +3,7 @@
   "token": "",
   "navegador": "chromium",
   "intervaloMin": 10,
+  "confiancaMin": 45,
   "recorte": {
     "x": 0.02,
     "y": 0.7,
