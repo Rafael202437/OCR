@@ -29,14 +29,15 @@ export async function lerNumero(worker, pngBuffer, limiar) {
     if (ehDigito) { const di = ((y + P) * (W + 2 * P) + (x + P)) * 4; out.data[di] = out.data[di + 1] = out.data[di + 2] = 0; }
   }
   const png = PNG.sync.write(out);
-  // Lê em dois modos de segmentação (8 = palavra única, 7 = linha única). O texto costuma ser igual
-  // nos dois; a confiança reportada varia conforme a fonte, então usamos a MAIOR. Se os dois discordam,
-  // a leitura é incerta: devolve confiança baixa para ser descartada.
+  // Lê em dois modos de segmentação (8 = palavra única, 7 = linha única). A confiança reportada varia
+  // conforme a fonte; por isso usamos a leitura de MAIOR confiança. Quando os dois concordam no número,
+  // somamos essa certeza (fica com a maior das duas). A validação forte não é esta: é a repetição entre
+  // leituras/ciclos (o coletor exige que leituras independentes batam) e a proteção do servidor.
   const a = await reconhecer(worker, png, '8');
   const b = await reconhecer(worker, png, '7');
   if (a.numero != null && a.numero === b.numero) return { numero: a.numero, confianca: Math.max(a.conf, b.conf) };
   const melhor = a.conf >= b.conf ? a : b;
-  return { numero: melhor.numero, confianca: Math.min(melhor.conf, 50) };
+  return { numero: melhor.numero, confianca: melhor.conf };
 }
 
 async function reconhecer(worker, png, psm) {
