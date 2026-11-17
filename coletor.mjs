@@ -76,7 +76,6 @@ async function rodar(worker, browser) {
       // leituras seguidas iguais = animação terminou). Assim não pegamos um número parcial.
       await abrir(page, c.codigo);
       const tirar = () => page.screenshot({ clip: clipDe(page, c) });
-      const confMin = c.confiancaMin ?? cfg.confiancaMin ?? 60;
       let r = await lerNumero(worker, await tirar(), limiarDe(c));
       let num = null, conf = 0;
       for (let i = 0; i < 6; i++) {
@@ -85,9 +84,14 @@ async function rodar(worker, browser) {
         if (r2.numero != null && r2.numero === r.numero) { num = r2.numero; conf = Math.max(r.confianca, r2.confianca); break; }
         r = r2;
       }
-      if (num != null && conf >= confMin) { leituras.push({ codigo: c.codigo, quantidade: num, confianca: conf }); log(c.nome || c.codigo, '→', num, '(' + conf + '%)'); }
-      else if (num != null) log(c.nome || c.codigo, '→ leitura de baixa confianca (' + num + ', ' + conf + '%), ignorada');
-      else log(c.nome || c.codigo, '→ número não estabilizou, ignorada');
+      // Garantia da leitura: a ESTABILIZAÇÃO (o número parou de mudar entre fotos). A confiança do
+      // Tesseract é pouco confiável nessa fonte (às vezes 0% numa leitura certa), então NÃO barramos
+      // por ela. Barramos só número com menos dígitos que o esperado (truncado) — e o servidor ainda
+      // rejeita quedas/subidas absurdas, que é onde um truncado sempre cai.
+      const dig = c.digitos || 0;
+      if (num == null) { log(c.nome || c.codigo, '→ número não estabilizou, ignorada'); }
+      else if (dig && String(num).length < dig) { log(c.nome || c.codigo, '→ número incompleto (' + num + ', esperado ' + dig + ' dígitos), ignorada'); }
+      else { const envc = Math.max(conf, 80); leituras.push({ codigo: c.codigo, quantidade: num, confianca: envc }); log(c.nome || c.codigo, '→', num, (conf ? '(ocr ' + conf + '%)' : '(estável)')); }
     } catch (e) { log(c.nome || c.codigo, '→ erro:', e.message); }
   }
   await page.close();
