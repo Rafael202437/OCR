@@ -2,13 +2,14 @@ name: Coletor de Brindes (OCR)
 
 # Roda na nuvem do GitHub, sem depender de nenhum computador seu.
 # GitHub usa horário UTC; o Brasil é UTC-3, então os horários abaixo estão +3h.
-# Janela desejada: todos os dias, das 09:00 às 23:30 (horário de Brasília), a cada 10 minutos.
+# Janela desejada: todos os dias, das 08:30 às 23:40 (horário de Brasília), a cada 10 minutos.
 on:
   schedule:
-    - cron: '*/10 12-23 * * *'    # 09:00–20:50 (Brasília)
-    - cron: '*/10 0-1 * * *'      # 21:00–22:50 (Brasília)
-    - cron: '0,10,20,30 2 * * *'  # 23:00–23:30 (Brasília)
-  workflow_dispatch: {}            # permite rodar na hora pelo botão "Run workflow"
+    - cron: '30,40,50 11 * * *'      # 08:30–08:50 (Brasília)
+    - cron: '*/10 12-23 * * *'       # 09:00–20:50 (Brasília)
+    - cron: '*/10 0-1 * * *'         # 21:00–22:50 (Brasília)
+    - cron: '0,10,20,30,40 2 * * *'  # 23:00–23:40 (Brasília)
+  workflow_dispatch: {}              # permite rodar na hora pelo botão "Run workflow"
 
 jobs:
   ler:
