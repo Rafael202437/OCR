@@ -1,20 +1,23 @@
 name: Coletor de Brindes (OCR)
 
-# Roda na nuvem do GitHub, sem depender de nenhum computador seu.
-# GitHub usa horário UTC; o Brasil é UTC-3, então os horários abaixo estão +3h.
-# Janela desejada: todos os dias, das 08:30 às 23:40 (horário de Brasília), a cada 10 minutos.
+# Por que em laço: o agendamento do GitHub (cron) NÃO dispara de forma confiável a cada 10 min —
+# ele atrasa e descarta disparos curtos (roda mais ou menos de hora em hora). Então o job entra
+# num LAÇO e lê a cada 10 minutos por conta própria, das 08:30 às 23:40 (horário de Brasília).
+# O cron só serve para (re)iniciar o laço algumas vezes ao dia; cancel-in-progress mantém um só.
 on:
   schedule:
-    - cron: '30,40,50 11 * * *'      # 08:30–08:50 (Brasília)
-    - cron: '*/10 12-23 * * *'       # 09:00–20:50 (Brasília)
-    - cron: '*/10 0-1 * * *'         # 21:00–22:50 (Brasília)
-    - cron: '0,10,20,30,40 2 * * *'  # 23:00–23:40 (Brasília)
-  workflow_dispatch: {}              # permite rodar na hora pelo botão "Run workflow"
+    - cron: '20 11,13,15,17,19,21,23 * * *'  # inícios às 08:20,10:20,12:20,14:20,16:20,18:20,20:20 (Brasília)
+    - cron: '20 1 * * *'                     # início às 22:20 (Brasília)
+  workflow_dispatch: {}                       # permite iniciar o laço na hora pelo botão "Run workflow"
+
+concurrency:
+  group: coletor-ocr
+  cancel-in-progress: true   # um novo início substitui o laço anterior (nunca roda em duplicidade)
 
 jobs:
   ler:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 350   # ~5h50m (o limite do GitHub é 6h); o laço também para sozinho às 23:40
     steps:
       - name: Baixar os arquivos
         uses: actions/checkout@v4
@@ -30,9 +33,28 @@ jobs:
       - name: Instalar o navegador (Chromium)
         run: npx playwright install --with-deps chromium
 
-      - name: Ler os monitores e enviar ao portal
-        run: node coletor.mjs --uma-vez
+      - name: Ler a cada 10 minutos, das 08:30 às 23:40 (Brasília)
         env:
           BRINDES_OCR_TOKEN: ${{ secrets.BRINDES_OCR_TOKEN }}
-          # Opcional: descomente para trocar o endereço do portal sem mexer no config.json
+          # Opcional: trocar o portal sem mexer no config.json
           # BRINDES_PORTAL: https://optimall.app
+        run: |
+          echo "Laço iniciado. Lendo a cada 10 min, das 08:30 às 23:40 (Brasília)."
+          while true; do
+            INICIO=$(date +%s)
+            HM=$(TZ='America/Sao_Paulo' date +%H%M); HM=$((10#$HM))
+            if [ "$HM" -ge 830 ] && [ "$HM" -le 2340 ]; then
+              node coletor.mjs --uma-vez || true
+            else
+              echo "$(TZ='America/Sao_Paulo' date +%H:%M) (Brasília) — fora da janela, aguardando."
+            fi
+            # parar ao passar das 23:40 (horário de Brasília)
+            HM=$(TZ='America/Sao_Paulo' date +%H%M); HM=$((10#$HM))
+            if [ "$HM" -gt 2340 ]; then
+              echo "Fim da janela diária (23:40). Encerrando o laço."
+              break
+            fi
+            # dormir o que faltar para completar 10 min desde o começo deste ciclo
+            RESTA=$(( 600 - ( $(date +%s) - INICIO ) ))
+            if [ "$RESTA" -gt 0 ]; then sleep "$RESTA"; fi
+          done
