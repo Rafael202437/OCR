@@ -41,10 +41,6 @@ async function abrir(page, cod) {
   catch (e) { log('aviso ao abrir:', e.message); }
   await page.waitForTimeout(8000);   // o monitor é um app (Flutter) que desenha o número depois de abrir
 }
-async function capturar(page, c) {
-  await abrir(page, c.codigo);
-  return page.screenshot({ clip: clipDe(page, c) });
-}
 
 /* Ajuste do recorte: abre UM contador e salva duas imagens (tela inteira e só o número),
  * para conferir se o recorte pega o número. Funciona com qualquer código, mesmo que ainda
@@ -75,24 +71,23 @@ async function rodar(worker, browser) {
   const leituras = [];
   for (const c of cfg.contadores) {
     try {
-      // Leituras independentes: só envia quando pelo menos DUAS batem (garantia forte contra
-      // ler o número no meio de uma animação/recarga). Faz 2 leituras; se discordarem, uma 3ª
-      // desempata por maioria (um instante ruim do monitor não faz pular o ciclo todo).
-      const ls = [await lerNumero(worker, await capturar(page, c), limiarDe(c))];
-      await page.waitForTimeout(3500);
-      ls.push(await lerNumero(worker, await capturar(page, c), limiarDe(c)));
-      if (!(ls[0].numero != null && ls[0].numero === ls[1].numero)) { await page.waitForTimeout(3500); ls.push(await lerNumero(worker, await capturar(page, c), limiarDe(c))); }
-      // número que aparece em pelo menos 2 das leituras
-      const cont = {};
-      for (const r of ls) if (r.numero != null) cont[r.numero] = (cont[r.numero] || 0) + 1;
-      const vencedor = Object.keys(cont).find(n => cont[n] >= 2);
+      // O monitor do Podi ANIMA a contagem ao abrir (o número sobe de 0 até o valor real). Por isso
+      // abrimos a página UMA vez e tiramos fotos sem recarregar, até o número PARAR de mudar (duas
+      // leituras seguidas iguais = animação terminou). Assim não pegamos um número parcial.
+      await abrir(page, c.codigo);
+      const tirar = () => page.screenshot({ clip: clipDe(page, c) });
       const confMin = c.confiancaMin ?? cfg.confiancaMin ?? 60;
-      if (vencedor != null) {
-        const num = parseInt(vencedor, 10);
-        const conf = Math.max(...ls.filter(r => r.numero === num).map(r => r.confianca));
-        if (conf >= confMin) { leituras.push({ codigo: c.codigo, quantidade: num, confianca: conf }); log(c.nome || c.codigo, '→', num, '(' + conf + '%)'); }
-        else log(c.nome || c.codigo, '→ leitura de baixa confianca (' + num + ', ' + conf + '%), ignorada');
-      } else log(c.nome || c.codigo, '→ leitura incerta (' + ls.map(r => r.numero).join(' / ') + '), ignorada');
+      let r = await lerNumero(worker, await tirar(), limiarDe(c));
+      let num = null, conf = 0;
+      for (let i = 0; i < 6; i++) {
+        await page.waitForTimeout(2500);
+        const r2 = await lerNumero(worker, await tirar(), limiarDe(c));
+        if (r2.numero != null && r2.numero === r.numero) { num = r2.numero; conf = Math.max(r.confianca, r2.confianca); break; }
+        r = r2;
+      }
+      if (num != null && conf >= confMin) { leituras.push({ codigo: c.codigo, quantidade: num, confianca: conf }); log(c.nome || c.codigo, '→', num, '(' + conf + '%)'); }
+      else if (num != null) log(c.nome || c.codigo, '→ leitura de baixa confianca (' + num + ', ' + conf + '%), ignorada');
+      else log(c.nome || c.codigo, '→ número não estabilizou, ignorada');
     } catch (e) { log(c.nome || c.codigo, '→ erro:', e.message); }
   }
   await page.close();
