@@ -3,27 +3,96 @@
   "token": "",
   "navegador": "chromium",
   "intervaloMin": 10,
-  "recorte": { "x": 0.02, "y": 0.70, "largura": 0.42, "altura": 0.20 },
-  "limiar": { "modo": "claro", "r": 175, "g": 165, "b": 110 },
+  "recorte": {
+    "x": 0.02,
+    "y": 0.7,
+    "largura": 0.42,
+    "altura": 0.2
+  },
+  "limiar": {
+    "modo": "claro",
+    "r": 175,
+    "g": 165,
+    "b": 110
+  },
   "contadores": [
-    { "codigo": "spjp", "nome": "Jockey Plaza",
-      "recorte": { "x": 0.050, "y": 0.550, "largura": 0.330, "altura": 0.200 },
-      "limiar": { "modo": "roxo", "margem": 30 } },
-
-    { "codigo": "itsp", "nome": "Itajaí",
-      "recorte": { "x": 0.085, "y": 0.40, "largura": 0.32, "altura": 0.21 },
-      "limiar": { "modo": "claro", "r": 225, "g": 225, "b": 225 } },
-
-    { "codigo": "spes", "nome": "Shopping Estação",
-      "recorte": { "x": 0.085, "y": 0.60, "largura": 0.30, "altura": 0.20 },
-      "limiar": { "modo": "escuro", "r": 170, "g": 70, "b": 70 } },
-
-    { "codigo": "pbot", "nome": "Porto Belo Outlet",
-      "recorte": { "x": 0.673, "y": 0.720, "largura": 0.204, "altura": 0.129 },
-      "limiar": { "modo": "laranja", "r": 190, "g": 180, "b": 80 } },
-
-    { "codigo": "sppc", "nome": "Palladium Curitiba",
-      "recorte": { "x": 0.595, "y": 0.75, "largura": 0.26, "altura": 0.16 },
-      "limiar": { "modo": "claro", "r": 150, "g": 150, "b": 150 } }
+    {
+      "codigo": "spjp",
+      "nome": "Jockey Plaza",
+      "recorte": {
+        "x": 0.05,
+        "y": 0.55,
+        "largura": 0.33,
+        "altura": 0.2
+      },
+      "limiar": {
+        "modo": "roxo",
+        "margem": 30
+      }
+    },
+    {
+      "codigo": "itsp",
+      "nome": "Itajaí",
+      "recorte": {
+        "x": 0.051,
+        "y": 0.346,
+        "largura": 0.43,
+        "altura": 0.351
+      },
+      "limiar": {
+        "modo": "claro",
+        "r": 228,
+        "g": 222,
+        "b": 205
+      }
+    },
+    {
+      "codigo": "spes",
+      "nome": "Shopping Estação",
+      "recorte": {
+        "x": 0.083,
+        "y": 0.609,
+        "largura": 0.26,
+        "altura": 0.176
+      },
+      "limiar": {
+        "modo": "escuro",
+        "r": 170,
+        "g": 70,
+        "b": 70
+      }
+    },
+    {
+      "codigo": "pbot",
+      "nome": "Porto Belo Outlet",
+      "recorte": {
+        "x": 0.673,
+        "y": 0.72,
+        "largura": 0.204,
+        "altura": 0.129
+      },
+      "limiar": {
+        "modo": "laranja",
+        "r": 190,
+        "g": 180,
+        "b": 80
+      }
+    },
+    {
+      "codigo": "sppc",
+      "nome": "Palladium Curitiba",
+      "recorte": {
+        "x": 0.604,
+        "y": 0.756,
+        "largura": 0.235,
+        "altura": 0.139
+      },
+      "limiar": {
+        "modo": "claro",
+        "r": 225,
+        "g": 223,
+        "b": 215
+      }
+    }
   ]
 }
