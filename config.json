@@ -98,6 +98,72 @@
         "b": 215
       },
       "digitos": 5
+    },
+    {
+      "codigo": "sppg",
+      "nome": "Palladium Ponta Grossa",
+      "recorte": {
+        "x": 0.604,
+        "y": 0.756,
+        "largura": 0.235,
+        "altura": 0.139
+      },
+      "limiar": {
+        "modo": "claro",
+        "r": 225,
+        "g": 223,
+        "b": 215
+      },
+      "digitos": 4
+    },
+    {
+      "codigo": "spcs",
+      "nome": "Shopping Cidade Sorocaba",
+      "recorte": {
+        "x": 0.604,
+        "y": 0.756,
+        "largura": 0.235,
+        "altura": 0.139
+      },
+      "limiar": {
+        "modo": "claro",
+        "r": 225,
+        "g": 223,
+        "b": 215
+      },
+      "digitos": 4
+    },
+    {
+      "codigo": "spum",
+      "nome": "Palladium Umuarama",
+      "recorte": {
+        "x": 0.604,
+        "y": 0.756,
+        "largura": 0.235,
+        "altura": 0.139
+      },
+      "limiar": {
+        "modo": "claro",
+        "r": 225,
+        "g": 223,
+        "b": 215
+      }
+    },
+    {
+      "codigo": "spcp",
+      "nome": "Catuaí Palladium",
+      "recorte": {
+        "x": 0.604,
+        "y": 0.756,
+        "largura": 0.235,
+        "altura": 0.139
+      },
+      "limiar": {
+        "modo": "claro",
+        "r": 225,
+        "g": 223,
+        "b": 215
+      }
     }
   ]
 }
