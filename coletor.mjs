@@ -24,7 +24,7 @@ const BASE = 'https://tv.podiapp.com.br/#/cg/';
 const args = process.argv.slice(2);
 const umaVez = args.includes('--uma-vez');
 const ajustar = args.includes('--ajustar') ? args[args.indexOf('--ajustar') + 1] : null;
-const hora = () => new Date().toLocaleString('pt-BR');
+const hora = () => new Date().toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' });   // log sempre no horário de Brasília
 const log = (...a) => console.log(hora(), '·', ...a);
 
 // cada contador pode ter o seu recorte/cor; se não tiver, usa o geral do config
