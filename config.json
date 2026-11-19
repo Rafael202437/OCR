@@ -86,10 +86,10 @@
       "codigo": "sppc",
       "nome": "Palladium Curitiba",
       "recorte": {
-        "x": 0.604,
-        "y": 0.756,
-        "largura": 0.235,
-        "altura": 0.139
+        "x": 0.585,
+        "y": 0.74,
+        "largura": 0.315,
+        "altura": 0.16
       },
       "limiar": {
         "modo": "claro",
